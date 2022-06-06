@@ -1,3 +1,4 @@
+import os
 import discord
 from discord.ext import commands
 from rtadubai import Nol
@@ -126,4 +127,4 @@ async def recent(ctx, card: discord.Option(str, "NOL Card Number", requied=True)
         await ctx.respond(recent['ErrorMsg'], ephemeral=True)
 
 
-client.run('OTEzMDg5MTA1OTUxMzM4NTM2.YZ5afw.nDgKaFcwA2hpViAYvSGLWGBoEX4')
+client.run(os.environ['TOKEN'])
