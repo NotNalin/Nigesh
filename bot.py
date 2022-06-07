@@ -42,9 +42,9 @@ async def nol(ctx, card):
         embed.add_field(name="Pending Balance", value=f"{nol_details['Pending Balance']}")
         embed.add_field(name="Expiry Date", value=f"{nol_details['Expiry Date']}")
         embed.set_footer(text=f"Please note that the shown balance may not include transactions occurred in the past 48 hours")
-        await ctx.respond(embed=embed, ephemeral=True)
+        await ctx.respond(embed=embed)
     else:
-        await ctx.respond(nol_details['ErrorMsg'], ephemeral=True)
+        await ctx.respond(nol_details['ErrorMsg'])
 
 
 @client.command()
