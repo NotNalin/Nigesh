@@ -109,4 +109,4 @@ async def recent(ctx, card: discord.Option(str, "NOL Card Number", requied=True)
         await ctx.respond(recent['ErrorMsg'])
 
 
-client.run(os.environ['TOKEN'])
+client.run(os.environ['NIGESH_TOKEN'])
