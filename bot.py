@@ -27,7 +27,7 @@ async def ping(ctx):
 async def balance(ctx, card):
     nolbal = Nol.details(card)
     if nolbal['Error'] is False:
-        await ctx.reply(f"Your Nol card balance is : {nolbal['Card Balance']}", mention_author=False)
+        await ctx.reply(f"Your Nol card balance is : {nolbal['Card Balance']} AED", mention_author=False)
     else:
         await ctx.reply(f"{card} is not a valid NOL Card", mention_author=False)
 
@@ -36,7 +36,7 @@ async def balance(ctx, card):
 async def bal(ctx, card: discord.Option(str, "NOL Card Number", requied=True)):
     nolbal = Nol.details(card)
     if nolbal['Error'] is False:
-        await ctx.respond(f"Your Nol card balance is : {nolbal['Card Balance']}")
+        await ctx.respond(f"Your Nol card balance is : {nolbal['Card Balance']} AED")
     else:
         await ctx.respond(f"{card} is not a valid NOL Card")
 
