@@ -49,7 +49,7 @@ async def nol(ctx, card):
         await ctx.reply(f"{card} is not a valid NOL Card", mention_author=False)
         return
 
-    embed = discord.Embed(title=f"NOL Details", description=f"{card.id}", color="0x00ff00")
+    embed = discord.Embed(title=f"NOL Details", description=f"{card.id}", color=0x00ff00)
     embed.set_thumbnail(url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
     embed.add_field(name="Card Balance", value=f"{card.balance} AED", inline=True)
     embed.add_field(name="Pending Balance", value=f"{card.pending} AED", inline=True)
@@ -66,7 +66,7 @@ async def nol(ctx, card):
         await ctx.respond(f"{card} is not a valid NOL Card")
         return
 
-    embed = discord.Embed(title=f"NOL Details", description=f"{card.id}", color="0x00ff00")
+    embed = discord.Embed(title=f"NOL Details", description=f"{card.id}", color=0x00ff00)
     embed.set_thumbnail(url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
     embed.add_field(name="Card Balance", value=f"{card.balance} AED", inline=True)
     embed.add_field(name="Pending Balance", value=f"{card.pending} AED", inline=True)
