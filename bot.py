@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from rtadubai import Nol
 from discord.commands import slash_command
+from discord.ui import View
 
 client = commands.Bot(command_prefix='$', intents=discord.Intents.all())
 
@@ -113,6 +114,102 @@ async def recent(ctx, card: discord.Option(str, "NOL Card Number", requied=True)
         await ctx.respond(embed=embed)
     else:
         await ctx.respond(recent['ErrorMsg'])
+
+
+def transaction_embed(transactions, no):
+    transaction = transactions[no]
+    embed = discord.Embed(title=f"Transaction {no + 1}/{len(transactions)}", description=f"{transaction['NolID']}")
+    embed.set_thumbnail(url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
+    embed.add_field(name="Date", value=f"{transaction['Date']}")
+    embed.add_field(name="Time", value=f"{transaction['Time']}")
+    embed.add_field(name="Transaction Type", value=f"{transaction['Type']}")
+    embed.add_field(name="Amount", value=f"{transaction['Amount']} AED")
+    embed.set_footer(text=f"Please note that the bot only shows transactions occurred in the past month")
+    return embed
+
+class TransactionsView(View):
+    def __init__(self, transactions):
+        self.transactions = transactions
+        self.index = 0
+        super().__init__(timeout=10)
+        self.children[0].disabled = True
+        self.children[1].disabled = True
+        self.children[2].label = f"{self.index + 1}/{len(self.transactions)}"
+
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+        await self.message.edit(view=self)
+
+    @discord.ui.button(label="⏪", style=discord.ButtonStyle.blurple)
+    async def rewind(self, button, interaction):
+        self.index = 0
+        button.disabled = True
+        self.children[1].disabled = True
+        self.children[2].label = f"{self.index + 1}/{len(self.transactions)}"
+        self.children[3].disabled = False
+        self.children[4].disabled = False
+        await interaction.response.edit_message(embed=transaction_embed(self.transactions, self.index), view=self)
+
+    @discord.ui.button(label="◀", style=discord.ButtonStyle.blurple)
+    async def previous_callback(self, button, interaction):
+        self.index -= 1
+        if self.index == 0:
+            self.children[0].disabled = True
+            button.disabled = True
+        if self.index < len(self.transactions) - 1:
+            self.children[3].disabled = False
+            self.children[4].disabled = False
+        self.children[2].label = f"{self.index + 1}/{len(self.transactions)}"
+        await interaction.response.edit_message(embed=transaction_embed(self.transactions, self.index), view=self)
+
+    @discord.ui.button(label=f"1/0", style=discord.ButtonStyle.secondary, disabled=True)
+    async def no_callback(self):
+        pass
+
+    @discord.ui.button(label="▶", style=discord.ButtonStyle.blurple)
+    async def next_callback(self, button, interaction):
+        self.index += 1
+        if self.index == len(self.transactions) - 1:
+            button.disabled = True
+            self.children[4].disabled = True
+        if self.index != 0:
+            self.children[0].disabled = False
+            self.children[1].disabled = False
+        self.children[2].label = f"{self.index + 1}/{len(self.transactions)}"
+        await interaction.response.edit_message(embed=transaction_embed(self.transactions, self.index), view=self)
+
+    @discord.ui.button(label="⏩", style=discord.ButtonStyle.blurple)
+    async def fast_forward(self, button, interaction):
+        self.index = len(self.transactions) - 1
+        self.children[0].disabled = False
+        self.children[1].disabled = False
+        self.children[2].label = f"{self.index + 1}/{len(self.transactions)}"
+        self.children[3].disabled = True
+        button.disabled = True
+        await interaction.response.edit_message(embed=transaction_embed(self.transactions, self.index), view=self)
+
+
+@client.slash_command()
+async def transactions(ctx, card):
+    transactions = Nol.transactions(card)
+    if transactions['Error'] is False:
+        Transactions = transactions['Transactions']
+        if len(Transactions) == 0:
+            await ctx.respond("No transactions found")
+        else:
+            await ctx.respond(embed=transaction_embed(Transactions, 0), view=TransactionsView(Transactions))
+
+
+@client.command()
+async def transactions(ctx, card):
+    transactions = Nol.transactions(card)
+    if transactions['Error'] is False:
+        Transactions = transactions['Transactions']
+        if len(Transactions) == 0:
+            await ctx.reply("No transactions found")
+        else:
+            await ctx.reply(embed=transaction_embed(Transactions, 0), view=TransactionsView(Transactions))
 
 
 client.run(os.environ['NIGESH_TOKEN'])
