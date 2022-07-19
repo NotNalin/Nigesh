@@ -127,11 +127,12 @@ def transaction_embed(transactions, no):
     embed.set_footer(text=f"Please note that the bot only shows transactions occurred in the past month")
     return embed
 
+
 class TransactionsView(View):
     def __init__(self, transactions):
         self.transactions = transactions
         self.index = 0
-        super().__init__(timeout=10)
+        super().__init__()
         self.children[0].disabled = True
         self.children[1].disabled = True
         self.children[2].label = f"{self.index + 1}/{len(self.transactions)}"
@@ -139,7 +140,10 @@ class TransactionsView(View):
     async def on_timeout(self):
         for child in self.children:
             child.disabled = True
-        await self.message.edit(view=self)
+        try:
+            await self.message.edit_original_message(view=self)
+        except AttributeError:
+            await self.message.edit(view=self)
 
     @discord.ui.button(label="⏪", style=discord.ButtonStyle.blurple)
     async def rewind(self, button, interaction):
@@ -190,17 +194,6 @@ class TransactionsView(View):
         await interaction.response.edit_message(embed=transaction_embed(self.transactions, self.index), view=self)
 
 
-@client.slash_command()
-async def transactions(ctx, card):
-    transactions = Nol.transactions(card)
-    if transactions['Error'] is False:
-        Transactions = transactions['Transactions']
-        if len(Transactions) == 0:
-            await ctx.respond("No transactions found")
-        else:
-            await ctx.respond(embed=transaction_embed(Transactions, 0), view=TransactionsView(Transactions))
-
-
 @client.command()
 async def transactions(ctx, card):
     transactions = Nol.transactions(card)
@@ -209,7 +202,20 @@ async def transactions(ctx, card):
         if len(Transactions) == 0:
             await ctx.reply("No transactions found")
         else:
-            await ctx.reply(embed=transaction_embed(Transactions, 0), view=TransactionsView(Transactions))
+            view = TransactionsView(Transactions)
+            view.message = await ctx.reply(embed=transaction_embed(Transactions, 0), view=view)
+
+
+@client.slash_command()
+async def transactions(ctx, card):
+    transactions = Nol.transactions(card)
+    if transactions['Error'] is False:
+        Transactions = transactions['Transactions']
+        if len(Transactions) == 0:
+            await ctx.respond("No transactions found")
+        else:
+            view = TransactionsView(Transactions)
+            view.message = await ctx.respond(embed=transaction_embed(Transactions, 0), view=view)
 
 
 client.run(os.environ['NIGESH_TOKEN'])
