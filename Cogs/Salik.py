@@ -13,7 +13,7 @@ class salik_cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    salik = SlashCommandGroup("salik")
+    salik = SlashCommandGroup("salik", description="Salik commands")
 
     @salik.command()
     async def balance(self, ctx, plate, mobile):

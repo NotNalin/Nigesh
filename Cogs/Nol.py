@@ -13,7 +13,7 @@ class nol_cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    nol = SlashCommandGroup("nol")
+    nol = SlashCommandGroup("nol", description="Nol commands")
 
     @commands.command(aliases=["bal"])
     async def balance(self, ctx, card):
