@@ -22,7 +22,7 @@ class nol_cog(commands.Cog):
         else:
             await ctx.reply(f"{card} is not a valid NOL Card", mention_author=False)
 
-    @commands.command(name='nol')
+    @commands.command(name='nol', aliases=['details'])
     async def _nol(self, ctx, card):
         try:
             card = Nol.Card(card)
@@ -105,7 +105,7 @@ class nol_cog(commands.Cog):
     @nol.command(name="recent", description="Check your Nol Card recent transactions")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     @discord.option(name='transaction_no', type=int, default=1, description='Number of recent transaction to show')
-    async def recent(self, ctx, card, transaction_no):
+    async def recent_slash(self, ctx, card, transaction_no):
         recent = Nol.recent(card, transaction_no)
         if recent['Error'] is False:
             transaction = recent['Transaction']
@@ -126,7 +126,7 @@ class nol_cog(commands.Cog):
 
     @nol.command()
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
-    async def transactions(self, ctx, card):
+    async def transactions_slash(self, ctx, card):
         transactions = Nol.transactions(card)
         if transactions['Error'] is False:
             Transactions = transactions['Transactions']
