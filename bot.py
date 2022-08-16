@@ -26,5 +26,6 @@ for i in os.listdir('./Cogs'):
         print(i)
         client.load_extension(f'Cogs.{i[:-3]}', store = False)
 
+client.load_extension('jishaku')
 
 client.run(os.environ['NIGESH_TOKEN'])

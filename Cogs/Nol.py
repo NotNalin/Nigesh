@@ -13,7 +13,6 @@ class nol_cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    nol = SlashCommandGroup("nol", description="Nol commands")
 
     @commands.command(aliases=["bal"])
     async def balance(self, ctx, card):
@@ -22,15 +21,6 @@ class nol_cog(commands.Cog):
             await ctx.reply(f"Your Nol card balance is : {nolbal['Card Balance']} AED", mention_author=False)
         else:
             await ctx.reply(f"{card} is not a valid NOL Card", mention_author=False)
-
-    @nol.command(name="balance", description="Check your Nol Card balance")
-    @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
-    async def bal(self, ctx, card):
-        nolbal = Nol.details(card)
-        if nolbal['Error'] is False:
-            await ctx.respond(f"Your Nol card balance is : {nolbal['Card Balance']} AED")
-        else:
-            await ctx.respond(f"{card} is not a valid Nol Card")
 
     @commands.command(name='nol')
     async def _nol(self, ctx, card):
@@ -48,24 +38,6 @@ class nol_cog(commands.Cog):
         embed.add_field(name="Expiry Date", value=f"{card.expiry}", inline=True)
         embed.set_footer(text=f"Please note that the shown balance may not include transactions occurred in the past 48 hours")
         await ctx.reply(embed=embed, mention_author=False)
-
-    @nol.command(name="details", description="Returns the Nol card's Details")
-    @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
-    async def details(self, ctx, card):
-        try:
-            card = Nol.Card(card)
-        except ValueError:
-            await ctx.respond(f"{card} is not a valid Nol Card")
-            return
-
-        embed = discord.Embed(title=f"NOL Details", description=f"{card.id}", color=0x00ff00)
-        embed.set_thumbnail(
-            url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
-        embed.add_field(name="Card Balance", value=f"{card.balance} AED", inline=True)
-        embed.add_field(name="Pending Balance", value=f"{card.pending} AED", inline=True)
-        embed.add_field(name="Expiry Date", value=f"{card.expiry}", inline=True)
-        embed.set_footer(text=f"Please note that the shown balance may not include transactions occurred in the past 48 hours")
-        await ctx.respond(embed=embed)
 
     @commands.command()
     async def recent(self, ctx, card, transaction_no=1):
@@ -86,6 +58,49 @@ class nol_cog(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
         else:
             await ctx.reply(recent['ErrorMsg'], mention_author=False)
+
+
+    @commands.command()
+    async def transactions(self, ctx, card):
+        transactions = Nol.transactions(card)
+        if transactions['Error'] is False:
+            Transactions = transactions['Transactions']
+            if len(Transactions) == 0:
+                await ctx.reply("No transactions found")
+            else:
+                view = TransactionsView(Transactions)
+                view.message = await ctx.reply(embed=transaction_embed(Transactions, 0), view=view)
+    
+    nol = SlashCommandGroup("nol", description="Nol commands")
+
+    @nol.command(name="balance", description="Check your Nol Card balance")
+    @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
+    async def bal(self, ctx, card):
+        nolbal = Nol.details(card)
+        if nolbal['Error'] is False:
+            await ctx.respond(f"Your Nol card balance is : {nolbal['Card Balance']} AED")
+        else:
+            await ctx.respond(f"{card} is not a valid Nol Card")
+
+
+    @nol.command(name="details", description="Returns the Nol card's Details")
+    @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
+    async def details(self, ctx, card):
+        try:
+            card = Nol.Card(card)
+        except ValueError:
+            await ctx.respond(f"{card} is not a valid Nol Card")
+            return
+
+        embed = discord.Embed(title=f"NOL Details", description=f"{card.id}", color=0x00ff00)
+        embed.set_thumbnail(
+            url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
+        embed.add_field(name="Card Balance", value=f"{card.balance} AED", inline=True)
+        embed.add_field(name="Pending Balance", value=f"{card.pending} AED", inline=True)
+        embed.add_field(name="Expiry Date", value=f"{card.expiry}", inline=True)
+        embed.set_footer(text=f"Please note that the shown balance may not include transactions occurred in the past 48 hours")
+        await ctx.respond(embed=embed)
+
 
     @nol.command(name="recent", description="Check your Nol Card recent transactions")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
@@ -108,18 +123,6 @@ class nol_cog(commands.Cog):
             await ctx.respond(embed=embed)
         else:
             await ctx.respond(recent['ErrorMsg'])
-
-
-    @commands.command()
-    async def transactions(self, ctx, card):
-        transactions = Nol.transactions(card)
-        if transactions['Error'] is False:
-            Transactions = transactions['Transactions']
-            if len(Transactions) == 0:
-                await ctx.reply("No transactions found")
-            else:
-                view = TransactionsView(Transactions)
-                view.message = await ctx.reply(embed=transaction_embed(Transactions, 0), view=view)
 
     @nol.command()
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
