@@ -147,6 +147,8 @@ def transaction_embeds(transactions):
         embed.add_field(name="Transaction Type", value=f"{transaction['Type']}")
         embed.add_field(name="Amount", value=f"{transaction['Amount']} AED")
         embed.set_footer(text=f"Please note that the bot only shows transactions occurred in the past month")
+        embeds.append(embed)
+    return embeds
 
 # def transaction_embed(transactions, no):
 #     transaction = transactions[no]
