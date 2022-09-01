@@ -139,7 +139,7 @@ class nol_cog(commands.Cog):
 def transaction_embeds(transactions):
     embeds = []
     for transaction in transactions:
-        embed = discord.Embed(title=f"NOL Transaction{len(embeds) + 1}/{len(transactions)}", description=f"{transaction['NolID']}")
+        embed = discord.Embed(title=f"NOL Transaction {len(embeds) + 1}/{len(transactions)}", description=f"{transaction['NolID']}")
         embed.set_thumbnail(
             url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
         embed.add_field(name="Date", value=f"{transaction['Date']}")
