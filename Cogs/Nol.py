@@ -68,7 +68,7 @@ class nol_cog(commands.Cog):
                 await ctx.reply("No transactions found")
             else:
                 paginator = pages.Paginator(pages=transaction_embeds(Transactions))
-                await paginator.send(ctx)
+                await paginator.send(ctx, reference=ctx.message, mention_author=False)
     
     nol = SlashCommandGroup("nol", description="Nol commands")
 
