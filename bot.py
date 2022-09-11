@@ -23,7 +23,6 @@ async def ping(ctx):
 
 for i in os.listdir('./Cogs'):
     if i.endswith('.py'):
-        print(i)
         client.load_extension(f'Cogs.{i[:-3]}', store = False)
 
 client.load_extension('jishaku')
