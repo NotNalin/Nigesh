@@ -26,7 +26,16 @@ class journey_cog(commands.Cog):
         departures = Shail.departures(stop)
         paginator = pages.Paginator(pages=departure_embeds(departures, stop))
         await paginator.respond(ctx.interaction)
-        
+
+    @commands.slash_command()
+    @discord.option(name='fromstop', type=str, description="From stop", autocomplete=stop_searcher)
+    @discord.option(name='tostop', type=str, description="To stop", autocomplete=stop_searcher)
+    async def journey(self, ctx, fromstop, tostop):
+        fromstop = Shail.Stop(name=fromstop)
+        tostop = Shail.Stop(name=tostop)
+        journey = Shail.journey_planner(fromstop, tostop)
+        paginator = pages.Paginator(pages=journey_embeds(journey), show_menu=True, show_indicator=False, menu_placeholder="Select a Journey")
+        await paginator.respond(ctx.interaction)
 
 def departure_embeds(departures, stop):
     embeds = []
@@ -40,6 +49,34 @@ def departure_embeds(departures, stop):
         embed.add_field(name="Status", value=departure["status"])
         embeds.append(embed)
     return embeds
+
+def journey_embeds(journeys):
+    menus = []
+    for journey in journeys:
+        embeds = []
+        embed = discord.Embed()
+        embed.add_field(name="Staring From", value=journey["startstop"])
+        embed.add_field(name="Starting time", value=journey["starttime"])
+        embed.add_field(name="Ending Time", value=journey["endtime"])
+        embed.add_field(name="Duration", value=journey["duration"])
+        embed.add_field(name="Amount", value=journey["amount"])
+        embeds.append(embed)
+        for i in journey['journeys']:
+            embed = discord.Embed()
+            embed.add_field(name="Time", value=i["time"])
+            embed.add_field(name="Stop", value=i["stop"])
+            embed.add_field(name="Method", value=i["method"])
+            embed.add_field(name="Mode", value=i["mode"])
+            embed.add_field(name="Duration", value=i["duration"])
+            embeds.append(embed)
+        menus.append(
+            pages.PageGroup(
+                pages=embeds,
+                label=f"Starting time : {journey['starttime']}, Ending Time: {journey['endtime']}",
+                description=f"Duration: {journey['duration']}, Amount: {journey['amount']}",
+            )
+        )
+    return menus
 
 def setup(bot):
     bot.add_cog(journey_cog(bot))
