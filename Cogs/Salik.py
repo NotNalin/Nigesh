@@ -1,11 +1,7 @@
-import os
-import json
 import discord
 from discord.ext import commands
-import rtadubai
 from discord.commands import SlashCommandGroup
-from rtadubai import Nol, Salik, Stop, JourneyPlanner
-from discord.ui import View
+from rtadubai import Salik
 
 
 

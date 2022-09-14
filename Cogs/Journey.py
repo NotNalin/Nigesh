@@ -1,9 +1,6 @@
 import discord
 from discord.ext import commands, pages
-import rtadubai
-from discord.commands import SlashCommandGroup
-from rtadubai import Nol, Salik, Shail
-from discord.ui import View
+from rtadubai import Shail
 
 
 async def stop_searcher(ctx: discord.AutocompleteContext):

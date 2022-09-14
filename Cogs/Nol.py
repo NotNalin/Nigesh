@@ -1,11 +1,7 @@
-import os
-import json
 import discord
 from discord.ext import commands, pages
 from discord.commands import SlashCommandGroup
-import rtadubai
-from rtadubai import Nol, Salik, Stop, JourneyPlanner
-from discord.ui import View
+from rtadubai import Nol
 
 class nol_cog(commands.Cog):
 
