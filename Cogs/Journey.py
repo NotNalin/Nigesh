@@ -20,6 +20,7 @@ class journey_cog(commands.Cog):
     @commands.slash_command()
     @discord.option(name='stop', type=str, description="Stop to check departures", autocomplete=stop_searcher)
     async def departures(self, ctx, stop):
+        await ctx.defer()
         stop = Shail.Stop(name=stop)
         departures = Shail.departures(stop)
         paginator = pages.Paginator(pages=departure_embeds(departures, stop))

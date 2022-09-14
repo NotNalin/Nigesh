@@ -17,6 +17,7 @@ class salik_cog(commands.Cog):
 
     @salik.command()
     async def balance(self, ctx, plate, mobile):
+        await ctx.defer()
         balance = Salik.balance_plate(plate, mobile)
         try:
             int(balance)
@@ -26,6 +27,7 @@ class salik_cog(commands.Cog):
 
     @salik.command()
     async def expiry(self, ctx, plate):
+        await ctx.defer()
         expiry = Salik.expiry(plate)
         await ctx.respond(expiry)
 

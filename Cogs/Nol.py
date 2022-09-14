@@ -75,6 +75,7 @@ class nol_cog(commands.Cog):
     @nol.command(name="balance", description="Check your Nol Card balance")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def bal(self, ctx, card):
+        await ctx.defer()
         nolbal = Nol.details(card)
         if nolbal['Error'] is False:
             await ctx.respond(f"Your Nol card balance is : {nolbal['Card Balance']} AED")
@@ -85,6 +86,7 @@ class nol_cog(commands.Cog):
     @nol.command(name="details", description="Returns the Nol card's Details")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def details(self, ctx, card):
+        await ctx.defer()
         try:
             card = Nol.Card(card)
         except ValueError:
@@ -105,6 +107,7 @@ class nol_cog(commands.Cog):
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     @discord.option(name='transaction_no', type=int, default=1, description='Number of recent transaction to show')
     async def recent_slash(self, ctx, card, transaction_no):
+        await ctx.defer()
         recent = Nol.recent(card, transaction_no)
         if recent['Error'] is False:
             transaction = recent['Transaction']
@@ -126,6 +129,7 @@ class nol_cog(commands.Cog):
     @nol.command(name="transactions", description="Check your Nol Card transactions")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def transactions_slash(self, ctx, card):
+        await ctx.defer()
         transactions = Nol.transactions(card)
         if transactions['Error'] is False:
             Transactions = transactions['Transactions']
