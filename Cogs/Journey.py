@@ -1,5 +1,3 @@
-import os
-import json
 import discord
 from discord.ext import commands, pages
 import rtadubai
@@ -31,10 +29,11 @@ class journey_cog(commands.Cog):
     @discord.option(name='fromstop', type=str, description="From stop", autocomplete=stop_searcher)
     @discord.option(name='tostop', type=str, description="To stop", autocomplete=stop_searcher)
     async def journey(self, ctx, fromstop, tostop):
+        await ctx.defer()
         fromstop = Shail.Stop(name=fromstop)
         tostop = Shail.Stop(name=tostop)
         journey = Shail.journey_planner(fromstop, tostop)
-        paginator = pages.Paginator(pages=journey_embeds(journey), show_menu=True, show_indicator=False, menu_placeholder="Select a Journey")
+        paginator = pages.Paginator(pages=journey_embeds(journey), show_menu=True, menu_placeholder="Select a Journey")
         await paginator.respond(ctx.interaction)
 
 def departure_embeds(departures, stop):
