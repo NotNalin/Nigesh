@@ -1,3 +1,4 @@
+from dis import disco
 import discord
 from discord.ext import commands
 from discord.commands import SlashCommandGroup
@@ -12,13 +13,14 @@ class salik_cog(commands.Cog):
     salik = SlashCommandGroup("salik", description="Salik commands")
 
     @salik.command()
-    async def balance(self, ctx, plate, mobile):
+    async def balance(self, ctx, plate : discord.Option(str, description="Plate"), mobile : discord.Option(str, description="Mobile number")):
         await ctx.defer()
         balance = Salik.balance_plate(plate, mobile)
         try:
             int(balance)
             await ctx.respond(f"{balance} AED")
-        except:
+        except Exception as e:
+            print(e)
             await ctx.respond(balance)
 
     @salik.command()
