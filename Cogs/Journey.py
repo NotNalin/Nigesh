@@ -38,12 +38,12 @@ def departure_embeds(departures, stop):
     embeds = []
     for departure in departures:
         embed = discord.Embed(title=f"{stop.name}", description=f"Departures at {stop.name}")
-        embed.add_field(name="Mode", value=departure["mode"])
-        embed.add_field(name="Type", value=departure["type"])
-        embed.add_field(name="Direction", value=departure["direction"])
-        embed.add_field(name="Scheduled Time", value=departure["scheduled_time"])
-        embed.add_field(name="Estimated Time", value=departure["estimated_time"])
-        embed.add_field(name="Status", value=departure["status"])
+        embed.add_field(name="Mode", value=departure["mode"], inline=False)
+        embed.add_field(name="Type", value=departure["type"], inline=False)
+        embed.add_field(name="Direction", value=departure["direction"], inline=False)
+        embed.add_field(name="Scheduled Time", value=departure["scheduled_time"], inline=False)
+        embed.add_field(name="Estimated Time", value=departure["estimated_time"], inline=False)
+        embed.add_field(name="Status", value=departure["status"], inline=False)
         embeds.append(embed)
     return embeds
 
@@ -52,19 +52,19 @@ def journey_embeds(journeys):
     for journey in journeys:
         embeds = []
         embed = discord.Embed()
-        embed.add_field(name="Staring From", value=journey["startstop"])
-        embed.add_field(name="Starting time", value=journey["starttime"])
-        embed.add_field(name="Ending Time", value=journey["endtime"])
-        embed.add_field(name="Duration", value=journey["duration"])
-        embed.add_field(name="Amount", value=journey["amount"])
+        embed.add_field(name="Staring From", value=journey["startstop"], inline=False)
+        embed.add_field(name="Starting time", value=journey["starttime"], inline=False)
+        embed.add_field(name="Ending Time", value=journey["endtime"], inline=False)
+        embed.add_field(name="Duration", value=journey["duration"], inline=False)
+        embed.add_field(name="Amount", value=journey["amount"], inline=False)
         embeds.append(embed)
         for i in journey['journeys']:
             embed = discord.Embed()
-            embed.add_field(name="Time", value=i["time"])
-            embed.add_field(name="Stop", value=i["stop"])
-            embed.add_field(name="Method", value=i["method"])
-            embed.add_field(name="Mode", value=i["mode"])
-            embed.add_field(name="Duration", value=i["duration"])
+            embed.add_field(name="Time", value=i["time"], inline=False)
+            embed.add_field(name="Stop", value=i["stop"], inline=False)
+            embed.add_field(name="Method", value=i["method"], inline=False)
+            embed.add_field(name="Mode", value=i["mode"], inline=False)
+            embed.add_field(name="Duration", value=i["duration"], inline=False)
             embeds.append(embed)
         menus.append(
             pages.PageGroup(
