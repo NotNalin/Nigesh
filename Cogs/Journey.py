@@ -18,22 +18,22 @@ class journey_cog(commands.Cog):
     @commands.slash_command()
     @discord.option(name='stop', type=str, description="Stop to check departures", autocomplete=stop_searcher)
     async def departures(self, ctx, stop):
-        await ctx.defer(ephemeral=True)
+        await ctx.defer()
         stop = Shail.Stop(name=stop)
         departures = Shail.departures(stop)
         paginator = pages.Paginator(pages=departure_embeds(departures, stop))
-        await paginator.respond(ctx.interaction, ephemeral=False)
+        await paginator.respond(ctx.interaction)
 
     @commands.slash_command()
     @discord.option(name='fromstop', type=str, description="From stop", autocomplete=stop_searcher)
     @discord.option(name='tostop', type=str, description="To stop", autocomplete=stop_searcher)
     async def journey(self, ctx, fromstop, tostop):
-        await ctx.defer(ephemeral=True)
+        await ctx.defer()
         fromstop = Shail.Stop(name=fromstop)
         tostop = Shail.Stop(name=tostop)
         journey = Shail.journey_planner(fromstop, tostop)
         paginator = pages.Paginator(pages=journey_embeds(journey), show_menu=True, menu_placeholder="Select a Journey")
-        await paginator.respond(ctx.interaction, ephemeral=False)
+        await paginator.respond(ctx.interaction)
 
 
 def departure_embeds(departures, stop):

@@ -68,17 +68,17 @@ class nol_cog(commands.Cog):
     @nol.command(name="balance", description="Check your Nol Card balance")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def bal(self, ctx, card):
-        await ctx.defer(ephemeral=True)
+        await ctx.defer()
         nolbal = Nol.details(card)
         if nolbal['Error'] is False:
-            await ctx.respond(f"Your Nol card balance is : {nolbal['Card Balance']} AED", ephemeral=False)
+            await ctx.respond(f"Your Nol card balance is : {nolbal['Card Balance']} AED")
         else:
             await ctx.respond(f"{card} is not a valid Nol Card")
 
     @nol.command(name="details", description="Returns the Nol card's Details")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def details(self, ctx, card):
-        await ctx.defer(ephemeral=True)
+        await ctx.defer()
         try:
             card = Nol.Card(card)
         except ValueError:
@@ -91,13 +91,13 @@ class nol_cog(commands.Cog):
         embed.add_field(name="Pending Balance", value=f"{card.pending} AED", inline=True)
         embed.add_field(name="Expiry Date", value=f"{card.expiry}", inline=True)
         embed.set_footer(text=f"Please note that the shown balance may not include transactions occurred in the past 48 hours")
-        await ctx.respond(embed=embed, ephemeral=False)
+        await ctx.respond(embed=embed)
 
     @nol.command(name="recent", description="Check your Nol Card recent transactions")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     @discord.option(name='transaction_no', type=int, default=1, description='Number of recent transaction to show')
     async def recent_slash(self, ctx, card, transaction_no):
-        await ctx.defer(ephemeral=True)
+        await ctx.defer()
         recent = Nol.recent(card, transaction_no)
         if recent['Error'] is False:
             transaction = recent['Transaction']
@@ -111,14 +111,14 @@ class nol_cog(commands.Cog):
             embed.add_field(name="Transaction Type", value=f"{transaction['Type']}")
             embed.add_field(name="Amount", value=f"{transaction['Amount']} AED")
             embed.set_footer(text=f"Please note that the bot only shows transactions occurred in the past month")
-            await ctx.respond(embed=embed, ephemeral=False)
+            await ctx.respond(embed=embed)
         else:
-            await ctx.respond(recent['ErrorMsg'], ephemeral=False)
+            await ctx.respond(recent['ErrorMsg'])
 
     @nol.command(name="transactions", description="Check your Nol Card transactions")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def transactions_slash(self, ctx, card):
-        await ctx.defer(ephemeral=True)
+        await ctx.defer()
         transactions = Nol.transactions(card)
         if transactions['Error'] is False:
             Transactions = transactions['Transactions']
@@ -126,7 +126,7 @@ class nol_cog(commands.Cog):
                 await ctx.respond("No transactions found")
             else:
                 paginator = pages.Paginator(pages=transaction_embeds(Transactions))
-                await paginator.respond(ctx.interaction, ephemeral=False)
+                await paginator.respond(ctx.interaction)
 
 
 def transaction_embeds(transactions):
