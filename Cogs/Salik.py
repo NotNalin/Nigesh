@@ -4,7 +4,6 @@ from discord.commands import SlashCommandGroup
 from rtadubai import Salik
 
 
-
 class salik_cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -12,7 +11,7 @@ class salik_cog(commands.Cog):
     salik = SlashCommandGroup("salik", description="Salik commands")
 
     @salik.command()
-    async def balance(self, ctx, plate : discord.Option(str, description="Plate"), mobile : discord.Option(str, description="Mobile number")):
+    async def balance(self, ctx, plate: discord.Option(str, description="Plate"), mobile: discord.Option(str, description="Mobile number")):
         await ctx.defer(ephemeral=True)
         balance = Salik.balance_plate(plate, mobile)
         try:
@@ -20,13 +19,13 @@ class salik_cog(commands.Cog):
             await ctx.respond(f"{balance} AED")
         except Exception as e:
             print(e)
-            await ctx.respond(balance)
+            await ctx.respond(balance, ephemeral=False)
 
     @salik.command()
     async def expiry(self, ctx, plate):
         await ctx.defer(ephemeral=True)
         expiry = Salik.expiry(plate)
-        await ctx.respond(expiry)
+        await ctx.respond(expiry, ephemeral=False)
 
 
 def setup(bot):
