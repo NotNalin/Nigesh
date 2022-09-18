@@ -25,9 +25,8 @@ class nol_cog(commands.Cog):
             await ctx.reply(f"{card} is not a valid Nol Card", mention_author=False)
             return
 
-        embed = discord.Embed(title=f"NOL Details", description=f"{card.id}", color=0x00ff00)
-        embed.set_thumbnail(
-            url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
+        embed = discord.Embed(title=f"Nol Details", description=f"{card.id}", color=0x00ff00)
+        embed.set_thumbnail(url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
         embed.add_field(name="Card Balance", value=f"{card.balance} AED", inline=True)
         embed.add_field(name="Pending Balance", value=f"{card.pending} AED", inline=True)
         embed.add_field(name="Expiry Date", value=f"{card.expiry}", inline=True)
@@ -43,8 +42,7 @@ class nol_cog(commands.Cog):
                 embed = discord.Embed(title=f"Last Nol Transaction", description=f"{transaction['NolID']}")
             else:
                 embed = discord.Embed(title=f"Recent Nol Transaction Number {transaction}", description=f"{transaction['NolID']}")
-            embed.set_thumbnail(
-                url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
+            embed.set_thumbnail(url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
             embed.add_field(name="Date", value=f"{transaction['Date']}")
             embed.add_field(name="Time", value=f"{transaction['Time']}")
             embed.add_field(name="Transaction Type", value=f"{transaction['Type']}")
@@ -71,7 +69,7 @@ class nol_cog(commands.Cog):
     @nol.command(name="balance", description="Check your Nol Card balance")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def bal(self, ctx, card):
-        await ctx.defer()
+        await ctx.defer(ephemeral=True)
         nolbal = Nol.details(card)
         if nolbal['Error'] is False:
             await ctx.respond(f"Your Nol card balance is : {nolbal['Card Balance']} AED")
@@ -82,7 +80,7 @@ class nol_cog(commands.Cog):
     @nol.command(name="details", description="Returns the Nol card's Details")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def details(self, ctx, card):
-        await ctx.defer()
+        await ctx.defer(ephemeral=True)
         try:
             card = Nol.Card(card)
         except ValueError:
@@ -103,7 +101,7 @@ class nol_cog(commands.Cog):
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     @discord.option(name='transaction_no', type=int, default=1, description='Number of recent transaction to show')
     async def recent_slash(self, ctx, card, transaction_no):
-        await ctx.defer()
+        await ctx.defer(ephemeral=True)
         recent = Nol.recent(card, transaction_no)
         if recent['Error'] is False:
             transaction = recent['Transaction']
@@ -125,7 +123,7 @@ class nol_cog(commands.Cog):
     @nol.command(name="transactions", description="Check your Nol Card transactions")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def transactions_slash(self, ctx, card):
-        await ctx.defer()
+        await ctx.defer(ephemeral=True)
         transactions = Nol.transactions(card)
         if transactions['Error'] is False:
             Transactions = transactions['Transactions']
@@ -139,9 +137,8 @@ class nol_cog(commands.Cog):
 def transaction_embeds(transactions):
     embeds = []
     for transaction in transactions:
-        embed = discord.Embed(title=f"NOL Transaction {len(embeds) + 1}/{len(transactions)}", description=f"{transaction['NolID']}")
-        embed.set_thumbnail(
-            url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
+        embed = discord.Embed(title=f"Nol Transaction {len(embeds) + 1}/{len(transactions)}", description=f"{transaction['NolID']}")
+        embed.set_thumbnail(url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
         embed.add_field(name="Date", value=f"{transaction['Date']}")
         embed.add_field(name="Time", value=f"{transaction['Time']}")
         embed.add_field(name="Transaction Type", value=f"{transaction['Type']}")

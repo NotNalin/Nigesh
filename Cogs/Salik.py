@@ -14,7 +14,7 @@ class salik_cog(commands.Cog):
 
     @salik.command()
     async def balance(self, ctx, plate : discord.Option(str, description="Plate"), mobile : discord.Option(str, description="Mobile number")):
-        await ctx.defer()
+        await ctx.defer(ephemeral=True)
         balance = Salik.balance_plate(plate, mobile)
         try:
             int(balance)
@@ -25,7 +25,7 @@ class salik_cog(commands.Cog):
 
     @salik.command()
     async def expiry(self, ctx, plate):
-        await ctx.defer()
+        await ctx.defer(ephemeral=True)
         expiry = Salik.expiry(plate)
         await ctx.respond(expiry)
 

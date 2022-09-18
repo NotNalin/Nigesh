@@ -9,7 +9,8 @@ async def stop_searcher(ctx: discord.AutocompleteContext):
     except Exception as e:
         print(e)
         return []
-        
+
+
 class journey_cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -17,7 +18,7 @@ class journey_cog(commands.Cog):
     @commands.slash_command()
     @discord.option(name='stop', type=str, description="Stop to check departures", autocomplete=stop_searcher)
     async def departures(self, ctx, stop):
-        await ctx.defer()
+        await ctx.defer(ephemeral=True)
         stop = Shail.Stop(name=stop)
         departures = Shail.departures(stop)
         paginator = pages.Paginator(pages=departure_embeds(departures, stop))
@@ -26,13 +27,14 @@ class journey_cog(commands.Cog):
     @commands.slash_command()
     @discord.option(name='fromstop', type=str, description="From stop", autocomplete=stop_searcher)
     @discord.option(name='tostop', type=str, description="To stop", autocomplete=stop_searcher)
-    async def journey(self, ctx, fromstop, tostop):
-        await ctx.defer()
+    async def journey(self, ctx: discord.ApplicationContext, fromstop, tostop):
+        await ctx.defer(ephemeral=True)
         fromstop = Shail.Stop(name=fromstop)
         tostop = Shail.Stop(name=tostop)
         journey = Shail.journey_planner(fromstop, tostop)
         paginator = pages.Paginator(pages=journey_embeds(journey), show_menu=True, menu_placeholder="Select a Journey")
         await paginator.respond(ctx.interaction)
+
 
 def departure_embeds(departures, stop):
     embeds = []
@@ -46,6 +48,7 @@ def departure_embeds(departures, stop):
         embed.add_field(name="Status", value=departure["status"], inline=False)
         embeds.append(embed)
     return embeds
+
 
 def journey_embeds(journeys):
     menus = []
@@ -75,7 +78,7 @@ def journey_embeds(journeys):
         )
     return menus
 
+
 def setup(bot):
     bot.add_cog(journey_cog(bot))
     print("Journey cog loaded")
-
