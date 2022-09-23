@@ -56,6 +56,7 @@ def journey_embeds(journeys):
         embeds = []
         embed = discord.Embed()
         embed.add_field(name="Staring From", value=journey["startstop"], inline=False)
+        embed.add_field(name="Destination", value=journey["endstop"], inline=False)
         embed.add_field(name="Starting time", value=journey["starttime"], inline=False)
         embed.add_field(name="Ending Time", value=journey["endtime"], inline=False)
         embed.add_field(name="Duration", value=journey["duration"], inline=False)
@@ -64,7 +65,8 @@ def journey_embeds(journeys):
         for i in journey['journeys']:
             embed = discord.Embed()
             embed.add_field(name="Time", value=i["time"], inline=False)
-            embed.add_field(name="Stop", value=i["stop"], inline=False)
+            embed.add_field(name="From", value=i["from"], inline=False)
+            embed.add_field(name="To", value=i["to"], inline=False)
             embed.add_field(name="Method", value=i["method"], inline=False)
             embed.add_field(name="Mode", value=i["mode"], inline=False)
             embed.add_field(name="Duration", value=i["duration"], inline=False)
