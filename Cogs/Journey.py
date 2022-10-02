@@ -55,6 +55,7 @@ def journey_embeds(journeys):
     for journey in journeys:
         embeds = []
         embed = discord.Embed()
+        embed.title = "Journey Planner"
         embed.add_field(name="Staring From", value=journey["startstop"], inline=False)
         embed.add_field(name="Destination", value=journey["endstop"], inline=False)
         embed.add_field(name="Starting Time", value=journey["starttime"], inline=False)
