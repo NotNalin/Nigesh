@@ -13,13 +13,13 @@ class salik_cog(commands.Cog):
     @salik.command()
     async def balance(self, ctx, plate: discord.Option(str, description="Plate"), mobile: discord.Option(str, description="Mobile number")):
         await ctx.defer()
-        balance = Salik.balance_plate(plate, mobile)
         try:
+            balance = Salik.balance_plate(plate, mobile)
             int(balance)
             await ctx.respond(f"{balance} AED")
         except Exception as e:
             print(e)
-            await ctx.respond(balance)
+            await ctx.respond(e.split(":")[-1])
 
     @salik.command()
     async def expiry(self, ctx, plate):
