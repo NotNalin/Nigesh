@@ -19,11 +19,11 @@ class journey_cog(commands.Cog):
     @discord.option(name='stop', type=str, description="Stop to check departures", autocomplete=stop_searcher)
     async def departures(self, ctx, stop):
         await ctx.defer()
-        stop = Shail.Stop(name=stop)
         try:
+            stop = Shail.Stop(name=stop)
             departures = Shail.departures(stop)
         except Exception as e:
-            await ctx.respond(e.name)
+            await ctx.respond(e)
             return
         if len(departures) == 0:
             await ctx.respond(f"No departures found for {stop.name}") 
@@ -35,9 +35,13 @@ class journey_cog(commands.Cog):
     @discord.option(name='tostop', type=str, description="To stop", autocomplete=stop_searcher)
     async def journey(self, ctx, fromstop, tostop):
         await ctx.defer()
-        fromstop = Shail.Stop(name=fromstop)
-        tostop = Shail.Stop(name=tostop)
-        journey = Shail.journey_planner(fromstop, tostop)
+        try:
+            fromstop = Shail.Stop(name=fromstop)
+            tostop = Shail.Stop(name=tostop)
+            journey = Shail.journey_planner(fromstop, tostop)
+        except Exception as e:
+            await ctx.respond(e)
+            return
         paginator = pages.Paginator(pages=journey_embeds(journey), show_menu=True, menu_placeholder="Select a Journey")
         await paginator.respond(ctx.interaction)
 

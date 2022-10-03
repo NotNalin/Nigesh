@@ -15,7 +15,7 @@ class nol_cog(commands.Cog):
         if nolbal['Error'] is False:
             await ctx.reply(f"Your Nol card balance is : {nolbal['Card Balance']} AED", mention_author=False)
         else:
-            await ctx.reply(f"{card} is not a valid NOL Card", mention_author=False)
+            await ctx.reply(f"{card} is not a valid Nol Card", mention_author=False)
 
     @commands.command(name='nol', aliases=['details'])
     async def _nol(self, ctx, card):
