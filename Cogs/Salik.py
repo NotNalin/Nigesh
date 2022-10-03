@@ -15,17 +15,18 @@ class salik_cog(commands.Cog):
         await ctx.defer()
         try:
             balance = Salik.balance_plate(plate, mobile)
-            int(balance)
             await ctx.respond(f"{balance} AED")
         except Exception as e:
-            print(e)
-            await ctx.respond(e.split(":")[-1])
+            await ctx.respond(e)
 
     @salik.command()
     async def expiry(self, ctx, plate):
         await ctx.defer()
-        expiry = Salik.expiry(plate)
-        await ctx.respond(expiry)
+        try:
+            expiry = Salik.expiry(plate)
+            await ctx.respond(expiry)
+        except Exception as e: 
+            await ctx.respond(e)
 
 
 def setup(bot):
