@@ -20,7 +20,13 @@ class journey_cog(commands.Cog):
     async def departures(self, ctx, stop):
         await ctx.defer()
         stop = Shail.Stop(name=stop)
-        departures = Shail.departures(stop)
+        try:
+            departures = Shail.departures(stop)
+        except Exception as e:
+            await ctx.respond(e.name)
+            return
+        if len(departures) == 0:
+            await ctx.respond(f"No departures found for {stop.name}") 
         paginator = pages.Paginator(pages=departure_embeds(departures, stop))
         await paginator.respond(ctx.interaction)
 
