@@ -11,11 +11,12 @@ class nol_cog(commands.Cog):
 
     @commands.command(aliases=["bal"])
     async def balance(self, ctx, card):
-        nolbal = Nol.details(card)
-        if nolbal['Error'] is False:
-            await ctx.reply(f"Your Nol card balance is : {nolbal['Card Balance']} AED", mention_author=False)
-        else:
-            await ctx.reply(f"{card} is not a valid Nol Card", mention_author=False)
+        try:
+            bal = Nol.balance(card)
+            await ctx.reply(f"Your Nol card balance is : {bal} AED", mention_author=False)
+        except ValueError as e:
+            await ctx.reply(e, mention_author=False)
+
 
     @commands.command(name='nol', aliases=['details'])
     async def _nol(self, ctx, card):
@@ -35,9 +36,8 @@ class nol_cog(commands.Cog):
 
     @commands.command()
     async def recent(self, ctx, card, transaction_no=1):
-        recent = Nol.recent(card, transaction_no)
-        if recent['Error'] is False:
-            transaction = recent['Transaction']
+        try:
+            transaction = Nol.recent(card, transaction_no)
             if transaction_no == 1:
                 embed = discord.Embed(title=f"Last Nol Transaction", description=f"{transaction['NolID']}")
             else:
@@ -49,19 +49,20 @@ class nol_cog(commands.Cog):
             embed.add_field(name="Amount", value=f"{transaction['Amount']} AED")
             embed.set_footer(text=f"Please note that the bot only shows transactions occurred in the past month")
             await ctx.reply(embed=embed, mention_author=False)
-        else:
-            await ctx.reply(recent['ErrorMsg'], mention_author=False)
+        except Exception as e:
+            await ctx.reply(e, mention_author=False)
 
     @commands.command()
     async def transactions(self, ctx, card):
-        transactions = Nol.transactions(card)
-        if transactions['Error'] is False:
-            Transactions = transactions['Transactions']
-            if len(Transactions) == 0:
+        try:
+            transactions = Nol.transactions(card)
+            if len(transactions) == 0:
                 await ctx.reply("No transactions found")
             else:
-                paginator = pages.Paginator(pages=transaction_embeds(Transactions))
+                paginator = pages.Paginator(pages=transaction_embeds(transactions))
                 await paginator.send(ctx, reference=ctx.message, mention_author=False)
+        except Exception as e:
+            await ctx.reply(e, mention_author=False)
 
     nol = SlashCommandGroup("nol", description="Nol commands")
 
@@ -69,11 +70,11 @@ class nol_cog(commands.Cog):
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def bal(self, ctx, card):
         await ctx.defer()
-        nolbal = Nol.details(card)
-        if nolbal['Error'] is False:
-            await ctx.respond(f"Your Nol card balance is : {nolbal['Card Balance']} AED")
-        else:
-            await ctx.respond(f"{card} is not a valid Nol Card")
+        try:
+            bal = Nol.balance(card)
+            await ctx.reply(f"Your Nol card balance is : {bal} AED", mention_author=False)
+        except Exception as e:
+            await ctx.reply(e, mention_author=False)
 
     @nol.command(name="details", description="Returns the Nol card's Details")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
@@ -98,9 +99,8 @@ class nol_cog(commands.Cog):
     @discord.option(name='transaction_no', type=int, default=1, description='Number of recent transaction to show')
     async def recent_slash(self, ctx, card, transaction_no):
         await ctx.defer()
-        recent = Nol.recent(card, transaction_no)
-        if recent['Error'] is False:
-            transaction = recent['Transaction']
+        try:
+            transaction = Nol.recent(card, transaction_no)
             if transaction_no == 1:
                 embed = discord.Embed(title=f"Last Nol Transaction", description=f"{transaction['NolID']}")
             else:
@@ -112,32 +112,33 @@ class nol_cog(commands.Cog):
             embed.add_field(name="Amount", value=f"{transaction['Amount']} AED")
             embed.set_footer(text=f"Please note that the bot only shows transactions occurred in the past month")
             await ctx.respond(embed=embed)
-        else:
-            await ctx.respond(recent['ErrorMsg'])
+        except Exception as e:
+            await ctx.reply(e, mention_author=False)
 
     @nol.command(name="transactions", description="Check your Nol Card transactions")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
     async def transactions_slash(self, ctx, card):
         await ctx.defer()
-        transactions = Nol.transactions(card)
-        if transactions['Error'] is False:
-            Transactions = transactions['Transactions']
-            if len(Transactions) == 0:
+        try:
+            transactions = Nol.transactions(card)
+            if len(transactions) == 0:
                 await ctx.respond("No transactions found")
             else:
-                paginator = pages.Paginator(pages=transaction_embeds(Transactions))
+                paginator = pages.Paginator(pages=transaction_embeds(transactions))
                 await paginator.respond(ctx.interaction)
+        except Exception as e:
+            await ctx.respond(e)
 
 
 def transaction_embeds(transactions):
     embeds = []
     for transaction in transactions:
-        embed = discord.Embed(title=f"Nol Transaction {len(embeds) + 1}/{len(transactions)}", description=f"{transaction['NolID']}")
+        embed = discord.Embed(title=f"Nol Transaction {len(embeds) + 1}/{len(transactions)}", description=f"{transaction['id']}")
         embed.set_thumbnail(url="https://www.rta.ae/wps/wcm/connect/rta/3ae021ee-ea75-4c10-a579-35ab58bcf20d/apps.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE.Z18_N004G041LOBR60AUHP2NT32000-3ae021ee-ea75-4c10-a579-35ab58bcf20d-nUKFITN")
-        embed.add_field(name="Date", value=f"{transaction['Date']}")
-        embed.add_field(name="Time", value=f"{transaction['Time']}")
-        embed.add_field(name="Transaction Type", value=f"{transaction['Type']}")
-        embed.add_field(name="Amount", value=f"{transaction['Amount']} AED")
+        embed.add_field(name="Date", value=f"{transaction['date']}")
+        embed.add_field(name="Time", value=f"{transaction['time']}")
+        embed.add_field(name="Transaction Type", value=f"{transaction['type']}")
+        embed.add_field(name="Amount", value=f"{transaction['amount']} AED")
         embed.set_footer(text=f"Please note that the bot only shows transactions occurred in the past month")
         embeds.append(embed)
     return embeds
