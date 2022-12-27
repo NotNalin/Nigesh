@@ -44,6 +44,13 @@ class journey_cog(commands.Cog):
             return
         paginator = pages.Paginator(pages=journey_embeds(journey), show_menu=True, menu_placeholder="Select a Journey")
         await paginator.respond(ctx.interaction)
+    
+    @commands.Cog.listener()
+    async def on_application_command_error(self, error):
+        if isinstance(error, discord.errors.NotFound):
+            pass
+        else:
+            raise error
 
 
 def departure_embeds(departures, stop):
