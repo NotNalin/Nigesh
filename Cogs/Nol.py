@@ -72,9 +72,9 @@ class nol_cog(commands.Cog):
         await ctx.defer()
         try:
             bal = Nol.balance(card)
-            await ctx.respond(f"Your Nol card balance is : {bal} AED", mention_author=False)
+            await ctx.respond(f"Your Nol card balance is : {bal} AED")
         except Exception as e:
-            await ctx.respond(e, mention_author=False)
+            await ctx.respond(e)
 
     @nol.command(name="details", description="Returns the Nol card's Details")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
@@ -113,7 +113,7 @@ class nol_cog(commands.Cog):
             embed.set_footer(text=f"Please note that the bot only shows transactions occurred in the past month")
             await ctx.respond(embed=embed)
         except Exception as e:
-            await ctx.respond(e, mention_author=False)
+            await ctx.respond(e)
 
     @nol.command(name="transactions", description="Check your Nol Card transactions")
     @discord.option(name='card', type=str, required=True, description='Nol Card Number', max_length=10, min_length=10)
