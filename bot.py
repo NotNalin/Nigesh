@@ -8,7 +8,7 @@ client = commands.Bot(command_prefix=commands.when_mentioned_or('$'), intents=di
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user}")
-    await client.change_presence(activity=discord.Game("the fool with Nigesh"))
+    await client.change_presence(activity=discord.Game("the fool with Sura"))
 
 
 @client.command(aliases=['latency'])
