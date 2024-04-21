@@ -1,4 +1,4 @@
 requests
 py-cord
-rtadubai==0.1.5
+git+https://github.com/NotNalin/rtadubai
 jishaku
